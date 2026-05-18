@@ -1,0 +1,40 @@
+#define BLYNK_TEMPLATE_ID "TMPxxxx"
+#define BLYNK_TEMPLATE_NAME "Flame"
+#define BLYNK_AUTH_TOKEN "YourToken"
+
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+
+char ssid[] = "WiFi";
+char pass[] = "Password";
+
+#define flamePin D1
+#define ledPin D2
+#define buzzer D3
+
+void setup() {
+  Serial.begin(9600);
+
+  pinMode(flamePin, INPUT);
+  pinMode(ledPin, OUTPUT);
+  pinMode(buzzer, OUTPUT);
+
+  Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass);
+}
+
+void loop() {
+  Blynk.run();
+
+  int flame = digitalRead(flamePin);
+
+  if(flame == 0){
+    digitalWrite(ledPin, HIGH);
+    digitalWrite(buzzer, HIGH);
+    Blynk.virtualWrite(V0, "API TERDETEKSI");
+  }
+  else{
+    digitalWrite(ledPin, LOW);
+    digitalWrite(buzzer, LOW);
+    Blynk.virtualWrite(V0, "AMAN");
+  }
+}

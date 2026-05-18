@@ -1,0 +1,41 @@
+#define BLYNK_TEMPLATE_ID "TMPxxxx"
+#define BLYNK_TEMPLATE_NAME "LDR"
+#define BLYNK_AUTH_TOKEN "YourToken"
+
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+
+char ssid[] = "WiFi";
+char pass[] = "Password";
+
+#define ldrPin A0
+#define ledPin D2
+#define buzzer D3
+
+void setup() {
+  Serial.begin(9600);
+
+  pinMode(ledPin, OUTPUT);
+  pinMode(buzzer, OUTPUT);
+
+  Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass);
+}
+
+void loop() {
+  Blynk.run();
+
+  int ldr = analogRead(ldrPin);
+
+  Blynk.virtualWrite(V0, ldr);
+
+  if(ldr < 500){
+    digitalWrite(ledPin, HIGH);
+    digitalWrite(buzzer, HIGH);
+  }
+  else{
+    digitalWrite(ledPin, LOW);
+    digitalWrite(buzzer, LOW);
+  }
+
+  delay(1000);
+}
