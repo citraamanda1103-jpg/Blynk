@@ -1,0 +1,57 @@
+#define BLYNK_TEMPLATE_ID "TMPxxxx"
+#define BLYNK_TEMPLATE_NAME "SoilDHT"
+#define BLYNK_AUTH_TOKEN "YourToken"
+
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+#include <DHT.h>
+
+char ssid[] = "WiFi";
+char pass[] = "Password";
+
+#define soilPin A0
+
+#define DHTPIN D1
+#define DHTTYPE DHT11
+
+#define ledPin D5
+#define buzzer D6
+
+DHT dht(DHTPIN, DHTTYPE);
+
+void setup() {
+  Serial.begin(9600);
+
+  dht.begin();
+
+  pinMode(ledPin, OUTPUT);
+  pinMode(buzzer, OUTPUT);
+
+  Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass);
+}
+
+void loop() {
+  Blynk.run();
+
+  int soil = analogRead(soilPin);
+  float t = dht.readTemperature();
+
+  Blynk.virtualWrite(V0, soil);
+  Blynk.virtualWrite(V1, t);
+
+  if(soil > 700){
+    digitalWrite(ledPin, HIGH);
+  }
+  else{
+    digitalWrite(ledPin, LOW);
+  }
+
+  if(t > 32){
+    digitalWrite(buzzer, HIGH);
+  }
+  else{
+    digitalWrite(buzzer, LOW);
+  }
+
+  delay(1000);
+}
